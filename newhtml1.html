@@ -1,0 +1,580 @@
+
+
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+
+        <!-- disable zooming -->
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=0" />
+
+        <title>Carousel 1 &middot; Intro to CSS 3D transforms &rsaquo; Examples</title>
+
+
+        <style media="screen">
+
+            .container {
+                width: 210px;
+                height: 140px;
+                position: relative;
+                margin: 0 auto 40px;
+                border: 1px solid #CCC;
+                -webkit-perspective: 1100px;
+                -moz-perspective: 1100px;
+                -o-perspective: 1100px;
+                perspective: 1100px;
+            }
+
+
+            #carousel {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                -webkit-transform-style: preserve-3d;
+                -moz-transform-style: preserve-3d;
+                -o-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+            }
+
+            .ready #carousel {
+                -webkit-transition: -webkit-transform 1s;
+                -moz-transition: -moz-transform 1s;
+                -o-transition: -o-transform 1s;
+                transition: transform 1s;
+            }
+
+            #carousel.panels-backface-invisible figure {
+                -webkit-backface-visibility: hidden;
+                -moz-backface-visibility: hidden;
+                -o-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+
+            #carousel figure {
+                display: block;
+                position: absolute;
+                width: 200px;
+                height: 300px;
+                left: 10px;
+                top: 10px;
+                border: 2px solid black;
+                line-height: 116px;
+                font-size: 80px;
+                font-weight: bold;
+                color: white;
+                text-align: center;
+            }
+
+            .ready #carousel figure {
+                -webkit-transition: opacity 1s, -webkit-transform 1s;
+                -moz-transition: opacity 1s, -moz-transform 1s;
+                -o-transition: opacity 1s, -o-transform 1s;
+                transition: opacity 1s, transform 1s;
+            }
+
+            #carousel figure:nth-child(1) { background: hsla(   0, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(2) { background: hsla(  40, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(3) { background: hsla(  80, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(4) { background: hsla( 120, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(5) { background: hsla( 160, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(6) { background: hsla( 200, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(7) { background: hsla( 240, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(8) { background: hsla( 280, 100%, 50%, 0.8 ); }
+            #carousel figure:nth-child(9) { background: hsla( 320, 100%, 50%, 0.8 ); }
+
+            #carousel figure:nth-child(1) {
+                -webkit-transform: rotateY(   0deg ) translateZ( 288px );
+                -moz-transform: rotateY(   0deg ) translateZ( 288px );
+                -o-transform: rotateY(   0deg ) translateZ( 288px );
+                transform: rotateY(   0deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(2) {
+                -webkit-transform: rotateY(  40deg ) translateZ( 288px );
+                -moz-transform: rotateY(  40deg ) translateZ( 288px );
+                -o-transform: rotateY(  40deg ) translateZ( 288px );
+                transform: rotateY(  40deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(3) {
+                -webkit-transform: rotateY(  80deg ) translateZ( 288px );
+                -moz-transform: rotateY(  80deg ) translateZ( 288px );
+                -o-transform: rotateY(  80deg ) translateZ( 288px );
+                transform: rotateY(  80deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(4) {
+                -webkit-transform: rotateY( 120deg ) translateZ( 288px );
+                -moz-transform: rotateY( 120deg ) translateZ( 288px );
+                -o-transform: rotateY( 120deg ) translateZ( 288px );
+                transform: rotateY( 120deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(5) {
+                -webkit-transform: rotateY( 160deg ) translateZ( 288px );
+                -moz-transform: rotateY( 160deg ) translateZ( 288px );
+                -o-transform: rotateY( 160deg ) translateZ( 288px );
+                transform: rotateY( 160deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(6) {
+                -webkit-transform: rotateY( 200deg ) translateZ( 288px );
+                -moz-transform: rotateY( 200deg ) translateZ( 288px );
+                -o-transform: rotateY( 200deg ) translateZ( 288px );
+                transform: rotateY( 200deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(7) {
+                -webkit-transform: rotateY( 240deg ) translateZ( 288px );
+                -moz-transform: rotateY( 240deg ) translateZ( 288px );
+                -o-transform: rotateY( 240deg ) translateZ( 288px );
+                transform: rotateY( 240deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(8) {
+                -webkit-transform: rotateY( 280deg ) translateZ( 288px );
+                -moz-transform: rotateY( 280deg ) translateZ( 288px );
+                -o-transform: rotateY( 280deg ) translateZ( 288px );
+                transform: rotateY( 280deg ) translateZ( 288px );
+            }
+            #carousel figure:nth-child(9) {
+                -webkit-transform: rotateY( 320deg ) translateZ( 288px );
+                -moz-transform: rotateY( 320deg ) translateZ( 288px );
+                -o-transform: rotateY( 320deg ) translateZ( 288px );
+                transform: rotateY( 320deg ) translateZ( 288px );
+            }
+
+            section, footer, nav {
+                display: block;
+            }
+
+            body {
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                -webkit-text-size-adjust: none;
+                color: #333;
+                max-width: 720px;
+                margin: 0 auto;
+                padding: 10px;
+            }
+
+            a {
+                color: blue;
+                color: hsl( 220, 90%, 40% );
+                text-decoration: none;
+            }
+
+            a:hover {
+                background-color: blue;
+                background-color: hsl( 220, 90%, 50% );
+                color: white;
+            }
+
+            #options {
+                position: relative;
+                z-index: 100;
+                margin-bottom: 40px;
+            }
+
+            button {
+                font-size: 16px;
+                -webkit-appearance: push-button;
+            }
+
+            footer {
+                border-top: 1px solid #CCC;
+                font-size: 0.8em;
+                position: relative;
+                z-index: 100;
+            }
+
+            #disclaimer {
+                color: red;
+                font-weight: bold;
+                display: none;
+            }
+            .no-csstransforms3d #disclaimer { display: block; }
+
+            hr {
+                border: none;
+                border-top: 1px solid #CCC;
+            }
+
+            figure {
+                margin: 0;
+            }
+
+            code {
+                font-family: 'Monaco', 'Menlo', monospace;
+            }
+
+            /* index navigation */
+
+            .index nav ul {
+                list-style: none;
+                margin: 0 0 3.0em 0;
+                padding: 0;
+            }
+
+            .index nav ul a {
+                display: block;
+                font-size: 18px;
+                font-weight: bold;
+                line-height: 24px;
+                padding: 10px;
+                border: 1px solid #CCC;
+                border-bottom: none;
+            }
+
+            .index nav ul li:first-child a {
+                border-radius: 10px 10px 0 0;
+            }
+
+            .index nav ul li:last-child a {
+                border-radius: 0 0 10px 10px;
+                border-bottom: 1px solid #CCC;
+            }
+
+            /**** Docs ****/
+
+            body.doc { max-width: 900px; }
+
+            .doc #content {
+                font-size: 14px;  
+                line-height: 1.5em;
+            }
+
+            .doc #content blockquote {
+                margin-left: 0;
+                padding: 0.8em;
+                background: #EEE;
+                background: hsla( 0, 0%, 0%, 0.04 );
+            }
+
+            .doc #content img {
+                border: 1px solid #CCC;
+                display: inline-block;
+            }
+
+            .doc #content pre {
+                font-size: 12px;
+                line-height: 1.5em;
+            }
+
+            .doc nav h1 {
+                font-size: 20px;
+            }
+
+            .doc nav ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .doc nav li a {
+                display: block;
+                padding: 0.3em 0;
+            }
+
+            .doc nav li.current a {
+                font-weight: bold;
+                color: #333;
+            }
+            .doc nav li.current a:hover { color: white; }
+
+
+
+            @media screen and (min-width: 768px) {
+
+                body.doc #content {
+                    padding-left: 220px;
+                }
+
+                .doc #doc-nav-wrapper {
+                    position: fixed;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                }
+
+                .doc .doc-nav-positioner {
+                    max-width: 900px;
+                    margin: 0 auto;
+                    position: relative;
+                }
+
+                .doc nav {
+                    width: 200px;
+                    font-size: 14px;
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                }
+
+                .doc nav h1 {
+                    margin-top: 0;
+                }
+
+            }
+
+            /* proxy range */
+
+            .proxy-range {
+                display: inline-block;
+                position: relative;
+                height: 30px;
+                width: 200px;
+                border: 1px solid hsla( 0, 0%, 0%, 0.15 );
+                background-color: hsla( 0, 0%, 0%, 0.02 );
+                border-radius: 15px;
+                box-shadow: inset 0 1px 7px hsla( 0, 0%, 0%, 0.3 );
+            }
+
+            .proxy-range.highlighted {
+                background-color: hsla( 220, 90%, 50%, 0.15 );
+            }
+
+            .proxy-range .handle {
+                width: 38px;
+                height: 38px;
+                border-radius: 20px;
+                border: 1px solid hsla(0, 0%, 0%, 0.3);
+                position: absolute;
+                top: -5px;
+                left: -20px;
+                background-color: hsla( 220, 70%, 60%, 1.0 );
+                background-image: -webkit-gradient(radial, center 15%, 0, center 30%, 30, 
+                    from(            hsla( 0, 0%, 100%, 0.6 ) ),  
+                    color-stop( 50%, hsla( 0, 0%, 100%, 0.0 ) ),
+                    color-stop( 50%, hsla( 0, 0%,   0%, 0.0 ) ),
+                    to(              hsla( 0, 0%,   0%, 0.5 ) )
+                    );
+                background-image: -moz-radial-gradient(center 30%, cover,
+                    hsla( 0, 0%, 100%, 0.5 ),  
+                    hsla( 0, 0%, 100%, 0.0 ) 50%,
+                    hsla( 0, 0%,   0%, 0.0 ) 50%,
+                    hsla( 0, 0%,   0%, 0.5 )
+                    );
+                box-shadow: 
+                    0  2px 0px -1px hsla( 0, 0%, 100%, 0.7 ) inset, 
+                    0 -4px 2px -1px hsla( 0, 0%,   0%, 0.1 ) inset, 
+                    0  1px 2px  0px hsla( 0, 0%,   0%, 0.3 )
+                    ;
+                -webkit-transition-property: width, height, top, left, -webkit-border-radius;
+                -moz-transition-property: width, height, top, left, -moz-border-radius;
+                -webkit-transition-duration: 0.1s;
+                -moz-transition-duration: 0.1s;
+            }
+
+            .proxy-range.highlighted .handle {
+                height: 98px;
+                top: -35px;
+                width: 4px;
+                left: -3px;
+                background-image: -webkit-gradient(linear, 0 top, 0 bottom, 
+                    from(            hsla( 0, 0%, 100%, 0.6 ) ),  
+                    color-stop( 50%, hsla( 0, 0%, 100%, 0.0 ) ),
+                    color-stop( 50%, hsla( 0, 0%,   0%, 0.0 ) ),
+                    to(              hsla( 0, 0%,   0%, 0.5 ) )
+                    );
+                border-radius: 3px;
+            }
+
+
+
+
+            /******* Pygments *******/
+
+
+
+            pre {
+                background: #111;
+                color: white;
+                padding: 0.8em;
+                white-space: pre-wrap;
+            }
+
+
+            code .s1,
+            code .s { color: #78BD55; } /* string */
+            code .mi, /* integer */
+            code .cp { color: #5298D4; } /* doctype */
+            code .k { color: #E39B79; } /* keyword */
+            code .kd, /* storage */
+            code .na { color: #A9D866; } /* markup attribute */
+            code .p  { color: #EDB; } /* punctuation */
+            code .o  { color: #F63; }   /* operator */
+            code .nb { color: #AA97AC;} /* support */
+
+            /* comment */
+            code .c,
+            code .c1 { color: #666; font-style: italic; }
+
+            code .nt { color: #A0C8FC; } /* Markup open tag */
+
+            code .nf { color: #9EA8B8; } /* css id */
+            code .nc { color: #A78352; }  /* CSS class */
+            code .m  { color: #DE8E50; } /* CSS value */
+            code .nd { color: #9FAD7E; } /* CSS pseudo selector */
+
+        </style>
+
+    </head>
+    <body>
+
+        <h1>Carousel 1</h1>
+        
+        <div class="questions">
+            <label for="name" class="font-weight-bold control-label"><?php echo $lang['LB_CHOOSE_SKIN']; ?></label>
+            <form class="options carousel">
+                <label>
+                    <input class="option" type="radio" name="question1" id="optionsRadios1" value="1">
+                    <?php echo $lang['LB_CHOOSE_SKIN_S1']; ?>
+                </label><br>
+                <label>
+                    <input class="option" type="radio" name="question1" id="optionsRadios2" value="2">
+                    <?php echo $lang['LB_CHOOSE_SKIN_S2']; ?>
+                </label><br>
+                <label>
+                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
+                    <?php echo $lang['LB_CHOOSE_SKIN_S3']; ?>
+                </label><br><br>
+            </form> 
+        </div>
+        <section class="container">
+            <div id="carousel">
+                <figure><img width="90%" height="90%" src="images/A.png" alt=""/></figure>               
+                <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/A.png" alt=""/></figure>               
+                <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
+                <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
+
+            </div>
+        </section>
+
+        <section id="options">
+            <p>
+                <label for="panel-count">panels</label>
+                <input type="range" id="panel-count" value="5" min="3" max="10" />
+            </p>
+
+            <p id="navigation">
+                <button id="previous" data-increment="-1">Previous</button>
+                <button id="next" data-increment="1">Next</button>
+            </p>
+
+            <p>
+                <button id="toggle-axis">Toggle Carousel Axis</button>
+            </p>
+
+            <p>
+                <button id="toggle-backface-visibility">Toggle Backface Visibility</button>
+            </p>
+
+        </section>
+
+        <script src="utils.js" type="text/javascript"></script>
+
+        <script>
+            var transformProp = Modernizr.prefixed('transform');
+
+            function Carousel3D(el) {
+                this.element = el;
+
+                this.rotation = 0;
+                this.panelCount = 0;
+                this.totalPanelCount = this.element.children.length;
+                this.theta = 0;
+
+                this.isHorizontal = true;
+
+            }
+
+            Carousel3D.prototype.modify = function () {
+
+                var panel, angle, i;
+
+                this.panelSize = this.element[ this.isHorizontal ? 'offsetWidth' : 'offsetHeight' ];
+                this.rotateFn = this.isHorizontal ? 'rotateY' : 'rotateX';
+                this.theta = (360 / this.panelCount);
+
+                // do some trig to figure out how big the carousel
+                // is in 3D space
+                this.radius = Math.round((this.panelSize / 2) / Math.tan(Math.PI / this.panelCount));
+
+                for (i = 0; i < this.panelCount; i++) {
+                    panel = this.element.children[i];
+                    angle = (this.theta * i);
+                    panel.style.opacity = 1;
+                    panel.style.backgroundColor = 'hsla(' + angle + ', 100%, 50%, 0.8)';
+                    // rotate panel, then push it out in 3D space
+                    panel.style[ transformProp ] = this.rotateFn + '(' + angle + 'deg) translateZ(' + this.radius + 'px)';
+                }
+
+                // hide other panels
+                for (; i < this.totalPanelCount; i++) {
+                    panel = this.element.children[i];
+                    panel.style.opacity = 0;
+                    panel.style[ transformProp ] = 'none';
+                }
+
+                // adjust rotation so panels are always flat
+                this.rotation = Math.round(this.rotation / this.theta) * this.theta;
+
+                this.transform();
+
+            };
+
+            Carousel3D.prototype.transform = function () {
+                // push the carousel back in 3D space,
+                // and rotate it
+                this.element.style[ transformProp ] = 'translateZ(-' + this.radius + 'px) ' + this.rotateFn + '(' + this.rotation + 'deg)';
+            };
+
+
+
+            var init = function () {
+
+
+                var carousel = new Carousel3D(document.getElementById('carousel')),
+                        panelCountInput = document.getElementById('panel-count'),
+                        axisButton = document.getElementById('toggle-axis'),
+                        navButtons = document.querySelectorAll('#navigation button'),
+                        onNavButtonClick = function (event) {
+                            var increment = parseInt(event.target.getAttribute('data-increment'));
+                            carousel.rotation += carousel.theta * increment * -1;
+                            carousel.transform();
+                        };
+
+                // populate on startup
+                carousel.panelCount = parseInt(panelCountInput.value, 10);
+                carousel.modify();
+
+
+                axisButton.addEventListener('click', function () {
+                    carousel.isHorizontal = !carousel.isHorizontal;
+                    carousel.modify();
+                }, false);
+
+                panelCountInput.addEventListener('change', function (event) {
+                    carousel.panelCount = event.target.value;
+                    carousel.modify();
+                }, false);
+
+                for (var i = 0; i < 2; i++) {
+                    navButtons[i].addEventListener('click', onNavButtonClick, false);
+                }
+
+                document.getElementById('toggle-backface-visibility').addEventListener('click', function () {
+                    carousel.element.toggleClassName('panels-backface-invisible');
+                }, false);
+
+                setTimeout(function () {
+                    document.body.addClassName('ready');
+                }, 0);
+
+            };
+
+            window.addEventListener('DOMContentLoaded', init, false);
+        </script>
+
+    </body>
+</html>

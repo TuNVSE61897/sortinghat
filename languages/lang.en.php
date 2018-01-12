@@ -7,7 +7,7 @@ Language: English
 
 $lang = array();
 
-$lang['PAGE_TITLE'] = 'WeasleyJumper - Hogwarts.vn';
+$lang['PAGE_TITLE'] = 'SortingHat - Hogwarts.vn';
 $lang['HEADER_TITLE_H3_TOP'] = 'Vietnam Hogwarts School of Witchcraft and Wizardry';
 $lang['HEADER_TITLE_H3_BOTTOM'] = '#WeasleyJumper #XmasHogwartsVietnam';
 
