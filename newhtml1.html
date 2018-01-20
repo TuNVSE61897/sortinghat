@@ -10,6 +10,8 @@
         <meta name="viewport" content="initial-scale=1.0, user-scalable=0" />
 
         <title>Carousel 1 &middot; Intro to CSS 3D transforms &rsaquo; Examples</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+        <link href="styles/styles.css" rel="stylesheet" type="text/css"/>
 
 
         <style media="screen">
@@ -19,7 +21,7 @@
                 height: 140px;
                 position: relative;
                 margin: 0 auto 40px;
-                border: 1px solid #CCC;
+
                 -webkit-perspective: 1100px;
                 -moz-perspective: 1100px;
                 -o-perspective: 1100px;
@@ -416,44 +418,109 @@
     <body>
 
         <h1>Carousel 1</h1>
-        
-        <div class="questions">
-            <label for="name" class="font-weight-bold control-label"><?php echo $lang['LB_CHOOSE_SKIN']; ?></label>
-            <form class="options carousel">
-                <label>
-                    <input class="option" type="radio" name="question1" id="optionsRadios1" value="1">
-                    <?php echo $lang['LB_CHOOSE_SKIN_S1']; ?>
-                </label><br>
-                <label>
-                    <input class="option" type="radio" name="question1" id="optionsRadios2" value="2">
-                    <?php echo $lang['LB_CHOOSE_SKIN_S2']; ?>
-                </label><br>
-                <label>
-                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
-                    <?php echo $lang['LB_CHOOSE_SKIN_S3']; ?>
-                </label><br><br>
-            </form> 
-        </div>
-        <section class="container">
-            <div id="carousel">
-                <figure><img width="90%" height="90%" src="images/A.png" alt=""/></figure>               
-                <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/A.png" alt=""/></figure>               
-                <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
-                <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
 
+        <div style="width: 90%; height: 95%; margin: auto;" class="container-fluid">
+            <div class="bg-3 text-center" style="height: 100%">
+                <div style=" margin-top: 50px; margin-left: auto;margin-right: auto;" class="container-fluid">
+                    <div class="row ajax-call" id="testLoading" action="function.php" method="post" role="form">
+                        <div class="col-sm-12 center-block" style="width: 100%; text-align: center">
+                            <div class="row center-block">
+                                <div class="form-group center-block" style="width: 100%">
+
+                                    <div class="form-group centerBlock text-center">
+                                      <!--  <div class="questions container">
+                                            <label for="name" class="font-weight-bold control-label">hello</label>
+                                            <form class="options" id="carousel">
+                                                <figure>
+                                                    <img width="90%" height="90%" src="images/options/1-1.png" alt=""/>
+
+                                                    <input class="option" type="radio" name="question1" id="optionsRadios1" value="1">
+                                                    <?php echo $lang['LB_CHOOSE_SKIN_S1']; ?>
+
+                                                </figure>
+                                                <figure>
+                                                    <img width="90%" height="90%" src="images/options/1-2.png" alt=""/>
+                                                    <input class="option" type="radio" name="question1" id="optionsRadios2" value="2">
+                                                    <?php echo $lang['LB_CHOOSE_SKIN_S2']; ?>
+                                                </figure>
+
+                                                <figure>
+                                                    <img width="90%" height="90%" src="images/options/1-3.png" alt=""/>
+                                                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
+                                                    <?php echo $lang['LB_CHOOSE_SKIN_S3']; ?>
+                                                    <br>
+
+                                                </figure>
+                                                <figure>
+                                                    <img width="90%" height="90%" src="images/options/1-3.png" alt=""/>
+
+                                                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
+                                                    <?php echo $lang['LB_CHOOSE_SKIN_S3']; ?>
+                                                    <br>
+
+                                                </figure>
+                                                <figure>
+                                                    <img width="90%" height="90%" src="images/options/1-3.png" alt=""/>
+                                                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
+                                                    <?php echo $lang['LB_CHOOSE_SKIN_S3']; ?>
+                                                    <br>
+
+                                                </figure>
+
+                                                <br>
+                                            </form> 
+
+
+                                        </div>-->
+
+                                        <div class="questions container">
+                                            <label for="name" class="font-weight-bold control-label">
+                                                Và là ở
+                                            </label>
+                                            <form class="options"  id="carousel" autocomplete="off">
+                                                <figure>
+                                                    <input class="option" type="radio" name="question2" id="optionsRadios1" value="1">
+                                                    Một bãi biển nổi tiếng của Muggle
+                                                </figure><br>
+                                                <figure>
+                                                    <input class="option" type="radio" name="question2" id="optionsRadios2" value="2">
+                                                    Một vùng rừng núi hoang vu, hùng vĩ
+                                                </figure><br>
+                                                <figure>
+                                                    <input class="option" type="radio" name="question2" id="optionsRadios3" value="3">
+                                                    Một vùng đất phủ tuyết trắng, ít sự sống
+                                                </figure><br>
+                                                <br>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+        <!-- <section class="container">
+             <div id="carousel">
+ 
+                 <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/A.png" alt=""/></figure>               
+                 <figure><img width="90%" height="90%" src="images/B.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/C.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/D.png" alt=""/></figure>
+                 <figure><img width="90%" height="90%" src="images/E.png" alt=""/></figure>
+ 
+             </div>
+         </section>-->
 
         <section id="options">
             <p>
                 <label for="panel-count">panels</label>
-                <input type="range" id="panel-count" value="5" min="3" max="10" />
+                <input type="range" id="panel-count" value="5" min="3" max="5" />
             </p>
 
             <p id="navigation">

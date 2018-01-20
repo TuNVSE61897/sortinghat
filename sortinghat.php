@@ -5,7 +5,6 @@ include 'common.php';
 <html lang="en">
     <head>
         <title><?php echo $lang['PAGE_TITLE']; ?></title>
-        <link rel="stylesheet" href="styles/styles2.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <meta property="og:url"                content="https://hogwarts.vn/sortinghat" />
@@ -30,6 +29,7 @@ include 'common.php';
         <script src="bootstrap-maxlength.min.js"></script>
         <script src="highlight.pack.js"></script>
         <link href="styles/styles.css" rel="stylesheet" type="text/css"/>
+
         <style>
             body, html {
                 width: 100%;
@@ -48,8 +48,122 @@ include 'common.php';
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript">
 
+
+
             $(document).ready(function () {
+
+                //////////// ANIMATION //////////////////
+
+                var transformProp = Modernizr.prefixed('transform');
+
+                function Carousel3D(el) {
+                    this.element = el;
+
+                    this.rotation = 0;
+                    this.panelCount = 0;
+                    this.totalPanelCount = this.element.children.length;
+                    this.theta = 0;
+
+                    this.isHorizontal = true;
+
+                }
+
+                Carousel3D.prototype.modify = function () {
+
+                    var panel, angle, i;
+
+                    this.panelSize = this.element[ this.isHorizontal ? 'offsetWidth' : 'offsetHeight' ];
+                    this.rotateFn = this.isHorizontal ? 'rotateY' : 'rotateX';
+                    this.theta = (360 / this.panelCount);
+
+                    // do some trig to figure out how big the carousel
+                    // is in 3D space
+                    this.radius = Math.round((this.panelSize / 2) / Math.tan(Math.PI / this.panelCount));
+
+                    for (i = 0; i < this.panelCount; i++) {
+                        panel = this.element.children[i];
+                        angle = (this.theta * i);
+                        panel.style.opacity = 1;
+                        //  panel.style.backgroundColor = 'hsla(' + angle + ', 100%, 50%, 0.8)';
+                        // rotate panel, then push it out in 3D space
+                        panel.style[ transformProp ] = this.rotateFn + '(' + angle + 'deg) translateZ(' + this.radius + 'px)';
+                    }
+
+                    // hide other panels
+                    for (; i < this.totalPanelCount; i++) {
+                        panel = this.element.children[i];
+                        panel.style.opacity = 0;
+                        panel.style[ transformProp ] = 'none';
+                    }
+
+                    // adjust rotation so panels are always flat
+                    this.rotation = Math.round(this.rotation / this.theta) * this.theta;
+
+                    this.transform();
+
+                };
+
+                Carousel3D.prototype.transform = function () {
+                    // push the carousel back in 3D space,
+                    // and rotate it
+                    this.element.style[ transformProp ] = 'translateZ(-' + this.radius + 'px) ' + this.rotateFn + '(' + this.rotation + 'deg)';
+                };
+
+
+
+                function init(panelNum) {
+
+                    // alert("init");
+
+                    var carousel = new Carousel3D(document.getElementById('carousel')),
+                            // panelCountInput = document.getElementById('panel-count'),
+                            navButtons = document.querySelectorAll('#navigation button'),
+                            onNavButtonClick = function (event) {
+                                var increment = parseInt(event.target.getAttribute('data-increment'));
+                                carousel.rotation += carousel.theta * increment * -1;
+                                carousel.transform();
+                            };
+
+                    carousel.element.toggleClassName('panels-backface-invisible');
+                    // populate on startup
+                    carousel.panelCount = parseInt(5, 10);//parseInt(panelCountInput.value, 10);
+                    carousel.modify();
+
+                    /*    panelCountInput.addEventListener('change', function (event) {
+                     alert("hello");
+                     carousel.panelCount = event.target.value;
+                     carousel.modify();
+                     }, false);*/
+                    carousel.panelCount = panelNum;
+                    carousel.modify();
+
+                    for (var i = 0; i < 2; i++) {
+                        navButtons[i].addEventListener('click', onNavButtonClick, false);
+                    }
+
+                    setTimeout(function () {
+                        document.body.addClassName('ready');
+                    }, 0);
+
+                }
+                ;
+
+                window.addEventListener('DOMContentLoaded', init(5), false);
+
+
+                ////////// QUIZ////////////////
+
+                   var source = "frog.mp3"
+                 var audio = document.createElement("audio");
+                 audio.autoplay = true;
+                 audio.load()
+                 audio.addEventListener("load", function () {
+                 audio.play();
+                 }, true);
+                 audio.src = source;
+
                 answers = new Object();
+                var numberOpt = [5, 6, 4, 4, 5, 7];
                 // var answer = ($(this).attr('value'))
                 /// var question = ($(this).attr('name'))
                 //  answers[question] = answer;
@@ -81,33 +195,50 @@ include 'common.php';
                 $($questions.get(currentQuestion)).fadeIn();
 
                 //attach a click listener to the HTML element with the id of 'next'
-                $('#next').click(function () {
+                $('#nextQuestion').click(function () {
 
                     num = currentQuestion + 1;
 
                     //Check if answer is empty
-                    if (isNaN(answers[('question' + currentQuestion)]) && num !== 1) {
+                    if (isNaN(answers[('question' + num)]) && num !== 16) {
                         alert("Xin chọn một đáp án");
                     } else {
+                        /*    alert(currentQuestion);
+                         if (currentQuestion === 0) {
+                         alert(currentQuestion);
+                         var panelCountInput = document.getElementById('panel-count');
+                         panelCountInput.value = 6;
+                         panelCountInput.dispatchEvent("change");
+                         }*/
+
                         //fade out the current question,
                         //putting a function inside of fadeOut calls that function 
                         //immediately after fadeOut is completed, 
                         //this is for a smoother transition animation
+
                         $($questions.get(currentQuestion)).fadeOut(function () {
+                            //  $( ".questions" ).remove();
+
                             //alert(answers['question1']);
                             //increment the current question by one
+
+                            //DOMContentLoaded
                             currentQuestion = currentQuestion + 1;
 
 
                             //if there are no more questions do stuff
                             if (currentQuestion == totalQuestions) {
                                 var result = sum_values();
-                                var name = $("input[name='question0']").val();
+                                var name = $("input[name='question16']").val();
 
                                 var xmlhttp = new XMLHttpRequest();
                                 xmlhttp.onreadystatechange = function () {
                                     if (this.readyState == 4 && this.status == 200) {
-                                        alert(this.responseText);
+                                   //     alert(this.responseText);
+                                        $("#navigation").fadeOut();
+                                        $("#nextQuestion").fadeOut();
+                                        document.getElementById("house-image").src = this.responseText;
+                                        document.getElementById("house-image").style.display = 'block';
                                         // alert(this.responseText);
                                         //document.getElementById("preview-image").src = this.responseText;
                                     }
@@ -118,7 +249,7 @@ include 'common.php';
                                     request = request + question + "=" + answers[question] + "&";
                                 }
 
-                                alert(request);
+                               // alert(request);
 
                                 xmlhttp.open("GET", "function.php?" + request, true);
                                 xmlhttp.send();
@@ -126,9 +257,16 @@ include 'common.php';
 
 
                             } else {
+                                $($questions.get(currentQuestion - 1)).remove();
+                                // var id = "question2";
+                                // var numberOpt = document.getElementById(id).value;
+                                // alert(numberOpt);
+                                //  window.addEventListener("load",init,false);
 
                                 //otherwise show the next question
                                 $($questions.get(currentQuestion)).fadeIn();
+                                init(numberOpt[currentQuestion]);
+                                //  document.addEventListener("mousemove", init, false);
                             }
                         });
                     }
@@ -146,20 +284,92 @@ include 'common.php';
                 return the_sum;
             }
 
+            var myAudio = document.getElementById("myAudio");
 
+            function playsound() {
+                return myAudio.paused ? myAudio.play() : myAudio.pause();
+            }
 
         </script>
+
+        <style media="screen">
+            .container {
+                width: 260px;
+                height: 390px;
+                position: relative;
+                margin: 20px auto 40px;
+
+                -webkit-perspective: 1100px;
+                -moz-perspective: 1100px;
+                -o-perspective: 1100px;
+                perspective: 1100px;
+            }
+
+
+            #carousel {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                -webkit-transform-style: preserve-3d;
+                -moz-transform-style: preserve-3d;
+                -o-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+            }
+
+            .ready #carousel {
+                -webkit-transition: -webkit-transform 1s;
+                -moz-transition: -moz-transform 1s;
+                -o-transition: -o-transform 1s;
+                transition: transform 1s;
+            }
+
+            #carousel.panels-backface-invisible figure {
+                -webkit-backface-visibility: hidden;
+                -moz-backface-visibility: hidden;
+                -o-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+
+            #carousel figure {
+                display: block;
+                position: absolute;
+                width: 260px;
+                height: 390px;
+                left: 10px;
+                top: 10px;
+
+
+                font-size: 18px;
+                font-weight: bold;
+                color: white;
+                text-align: center;
+            }
+
+            .ready #carousel figure {
+                -webkit-transition: opacity 1s, -webkit-transform 1s;
+                -moz-transition: opacity 1s, -moz-transform 1s;
+                -o-transition: opacity 1s, -o-transform 1s;
+                transition: opacity 1s, transform 1s;
+            }
+
+
+        </style>
     </head>
     <body>
 
-        <div style="width: 90%; height: 95%; margin: auto;" class="container-fluid">
+        <div style="width: 90%; height: 97%; margin: auto;" class="container-fluid">
+            <!--<div>
+                   <audio id="myAudio" src="frog.mp3" preload="auto"></audio>
+                       <a onclick="playsound()"><img width="15px" height="15px" src="images/sound2.png" /></a>
+          
+               </div>-->
             <div class="bg-3 text-center" style="height: 100%">
                 <br>
-                <h3 style="font-style: #FFFFFF"><b><?php echo $lang['HEADER_TITLE_H3_TOP']; ?></b></h3></br>
+                <h3 style="font-style: #FFFFFF"><b><?php echo $lang['HEADER_TITLE_H3_TOP']; ?></b></h3>
                <!-- <img src="images/logo.png" class="img-circle" width="30%" height="30%" alt="Bird"></br></br>
                 <h3>#WeasleyJumper #XmasHogwartsVietnam</h3>-->
 
-                <div style=" margin-top: 50px; margin-left: auto;margin-right: auto;" class="container-fluid">
+                <div style=" margin-top: 30px; margin-left: auto;margin-right: auto;" class="container-fluid">
                     <div class="row ajax-call" id="testLoading" action="function.php" method="post" role="form">
 
                         <!-- Column Face and Skin -->
@@ -169,193 +379,260 @@ include 'common.php';
                                 <div class="form-group center-block" style="width: 100%">
 
                                     <div class="form-group centerBlock text-center">
-                                        
-                                        <!-- Name -->
-                                        <div class="questions">
-                                            <label for="name" class="font-weight-bold control-label">
-                                                Tên của trò
-                                            </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="text" name="question0" id="optionsRadios1" value="">
-                         
-                                                </label>
-                                                <br><br>
-                                            </form> 
-                                        </div>
 
                                         <!-- Question 1 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question1" value="5">
                                             <label for="name" class="font-weight-bold control-label">
-                                                Hogwarts tổ chức cho học sinh toàn trường đi du lịch. Trò mong muốn đó sẽ là dịp
+                                                <text style="font-size: 24px"> Hogwarts tổ chức cho học sinh toàn trường đi du lịch. Trò mong muốn đó sẽ là dịp</text>
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question1" id="optionsRadios1" value="1">
-                                                    Halloween
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question1" id="optionsRadios2" value="2">
-                                                    Valentine
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
-                                                    Giáng sinh
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question1" id="optionsRadios4" value="4">
-                                                    Cuối năm học
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question1" id="optionsRadios5" value="5">
-                                                    Cứ được đi chơi là tốt rồi không quan trọng
-                                                </label><br><br>
-                                            </form> 
+                                            <div class="container">
+                                                <form class="options" id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/1-1.png" alt=""/>
+                                                        <br>   <br>    Halloween
+                                                        <br><input class="option" type="radio" name="question1" id="optionsRadios1" value="1">
+
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/1-2.png" alt=""/>
+                                                        <br>  <br>  Valentine
+                                                        <br> <input class="option" type="radio" name="question1" id="optionsRadios2" value="2">
+
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img  width="80%" height="80%" src="images/options/1-3.png" alt=""/>
+                                                        <br>  <br>    Giáng sinh
+                                                        <br> <input class="option" type="radio" name="question1" id="optionsRadios3" value="3">
+
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img  width="80%" height="80%" src="images/options/1-4.png" alt=""/>
+
+                                                        <br>  <br>   Cuối năm học
+                                                        <br><input class="option" type="radio" name="question1" id="optionsRadios4" value="4">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/1-5.png" alt=""/>
+
+                                                        <br> <br>  Cứ được đi chơi là tốt rồi không quan trọng
+                                                        <br> <input class="option" type="radio" name="question1" id="optionsRadios5" value="5">
+                                                    </figure><br>
+                                                </form> 
+                                            </div>
                                         </div>
 
                                         <!-- Question 2 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question2" value="6">
                                             <label for="name" class="font-weight-bold control-label">
                                                 Và là ở
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question2" id="optionsRadios1" value="1">
-                                                    Một bãi biển nổi tiếng của Muggle
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question2" id="optionsRadios2" value="2">
-                                                    Một vùng rừng núi hoang vu, hùng vĩ
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question2" id="optionsRadios3" value="3">
-                                                    Một vùng đất phủ tuyết trắng, ít sự sống
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question2" id="optionsRadios4" value="4">
-                                                    Một trang trại thiên nhiên trù phú, hoa thơm trái ngọt
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question2" id="optionsRadios5" value="5">
-                                                    Một nơi ghi dấu lịch sử với nhiều điều bí ẩn cần khám phá
-                                                </label><br><br>
-                                            </form>
+                                            <div class="container">
+                                                <form class="options" id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-1.png" alt=""/>
+                                                        <br><br>Một bãi biển nổi tiếng của Muggle
+                                                        <br><input class="option" type="radio" name="question2" id="optionsRadios1" value="1">
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-2.png" alt=""/>
+                                                        <br> <br>Một vùng rừng núi hoang vu, hùng vĩ
+                                                        <br><input class="option" type="radio" name="question2" id="optionsRadios2" value="2">
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-3.png" alt=""/>
+                                                        <br> <br> Một vùng đất phủ tuyết trắng, ít sự sống
+                                                        <br>  <input class="option" type="radio" name="question2" id="optionsRadios3" value="3">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-4.png" alt=""/>
+                                                        <br><br>  Một trang trại thiên nhiên trù phú, hoa thơm trái ngọt
+                                                        <br>  <input class="option" type="radio" name="question2" id="optionsRadios4" value="4">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-5.png" alt=""/>
+                                                        <br><br>   Một hoang đảo giữa biển Bắc bao la
+                                                        <br>  <input class="option" type="radio" name="question2" id="optionsRadios4" value="5">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/2-6.png" alt=""/>
+                                                        <br><br>   Một nơi ghi dấu lịch sử với nhiều điều bí ẩn cần khám phá
+                                                        <br> <input class="option" type="radio" name="question2" id="optionsRadios5" value="6">
+
+                                                    </figure><br><br>
+                                                </form>
+                                            </div>
                                         </div>
 
                                         <!-- Question 3 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question3" value="4">
                                             <label for="bg" class="font-weight-bold control-label">
                                                 Trò sẽ chuẩn bị cho chuyến đi kỹ tới mức nào?
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question3" id="optionsRadios1" value="1">
-                                                    Tìm hiểu về nơi đó trước một, hai tuần vì quá háo hức
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question3" id="optionsRadios2" value="2">
-                                                    Chuẩn bị đủ để không chết đói hoặc chết chán
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question3" id="optionsRadios3" value="3">
-                                                    Điều gì đến thì đến. Còn cả lũ bạn đi chung lo gì!
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question3" id="optionsRadios4" value="4">
-                                                    Chuẩn bị thật kỹ lưỡng, mình không cần biết đâu ai khác cần
-                                                </label><br><br>
-                                            </form>
+                                            <div class="container">
+                                                <form class="options"  id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/3-1.png" alt=""/>
+                                                        <br><br>  Tìm hiểu về nơi đó trước một, hai tuần vì quá háo hức
+                                                        <br>   <input class="option" type="radio" name="question3" id="optionsRadios1" value="1">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/3-2.png" alt=""/>
+                                                        <br> <br>  Chuẩn bị đủ để không chết đói hoặc chết chán
+                                                        <br>   <input class="option" type="radio" name="question3" id="optionsRadios2" value="2">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/3-3.png" alt=""/>
+                                                        <br><br>    Điều gì đến thì đến. Còn cả lũ bạn đi chung lo gì!
+                                                        <br>    <input class="option" type="radio" name="question3" id="optionsRadios3" value="3">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/3-4.png" alt=""/>
+                                                        <br><br>    Chuẩn bị thật kỹ lưỡng, mình không cần biết đâu ai khác cần
+                                                        <br>    <input class="option" type="radio" name="question3" id="optionsRadios4" value="4">
+
+                                                    </figure><br><br>
+                                                </form>
+                                            </div>
                                         </div>
 
                                         <!-- Question 4 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question4" value="4">
                                             <label for="bg" class="font-weight-bold control-label">
                                                 Trò sẽ bàn bạc chung về việc chuẩn bị với ai?
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question4" id="optionsRadios1" value="1">
-                                                    Tất nhiên là đứa bạn thân nhất rồi
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question4" id="optionsRadios2" value="2">
-                                                    Bạn trai/bạn gái tôi chứ!
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question4" id="optionsRadios3" value="3">
-                                                    Bàn gì với ai thì bàn, mình vẫn phải lo hết cho mình, không tin ai được.
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question4" id="optionsRadios4" value="4">
-                                                    Hỏi kinh nghiệm các anh chị đi trước và các Huynh Trưởng là tốt nhất.
-                                                </label><br><br>
-                                            </form>
+                                            <div class="container">                                            
+                                                <form class="options" id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/4-1.png" alt=""/>
+                                                        <br><br>    Tất nhiên là đứa bạn thân nhất rồi
+                                                        <br>    <input class="option" type="radio" name="question4" id="optionsRadios1" value="1">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/4-2.png" alt=""/>
+                                                        <br><br>    Bạn trai/bạn gái tôi chứ!
+                                                        <br>    <input class="option" type="radio" name="question4" id="optionsRadios2" value="2">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/4-3.png" alt=""/>
+                                                        <br><br>    Bàn gì với ai thì bàn, mình vẫn phải lo hết cho mình, không tin ai được.
+                                                        <br>    <input class="option" type="radio" name="question4" id="optionsRadios3" value="3">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/4-4.png" alt=""/>
+                                                        <br><br>   Hỏi kinh nghiệm các anh chị đi trước và các Huynh Trưởng là tốt nhất.
+                                                        <br>   <input class="option" type="radio" name="question4" id="optionsRadios4" value="4">
+
+                                                    </figure><br><br>
+                                                </form>
+                                            </div>
+
                                         </div>
 
                                         <!-- Question 5 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question5" value="5">
                                             <label for="bg" class="font-weight-bold control-label">
                                                 Trò muốn đi từ trường tới khu du lịch bằng phương tiện gì?
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question5" id="optionsRadios1" value="1">
-                                                    Tàu tốc hành Hogwarts
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question5" id="optionsRadios2" value="2">
-                                                    Độn thổ kèm theo với các Huynh trưởng, Giáo sư, Thủ Lĩnh, Giám thị...
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question5" id="optionsRadios3" value="3">
-                                                    Cưỡi thảm bay
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question5" id="optionsRadios4" value="4">
-                                                    Khóa cảng
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question5" id="optionsRadios5" value="5">
-                                                    Dùng bột Floo
-                                                </label><br><br>
-                                            </form>
+                                            <div class="container">         
+                                                <form class="options" id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/5-1.png" alt=""/>
+                                                        <br><br>      Tàu tốc hành Hogwarts
+                                                        <br>  <input class="option" type="radio" name="question5" id="optionsRadios1" value="1">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/5-2.png" alt=""/>
+                                                        <br><br>  Độn thổ kèm theo với các Huynh trưởng, Giáo sư, Thủ Lĩnh, Giám thị...
+                                                        <br>   <input class="option" type="radio" name="question5" id="optionsRadios2" value="2">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/5-3.png" alt=""/>
+                                                        <br><br>     Cưỡi thảm bay
+                                                        <br>  <input class="option" type="radio" name="question5" id="optionsRadios3" value="3">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/5-4.png" alt=""/>
+                                                        <br><br>     Khóa cảng
+                                                        <br>      <input class="option" type="radio" name="question5" id="optionsRadios4" value="4">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/5-5.png" alt=""/>
+                                                        <br><br>    Dùng bột Floo
+                                                        <br>   <input class="option" type="radio" name="question5" id="optionsRadios5" value="5">
+
+                                                    </figure><br><br>
+                                                </form>
+                                            </div>
                                         </div>
 
                                         <!-- Question 6 -->
-                                        <div class="questions">
+                                        <div class="questions" id="question6" value="7">
                                             <label for="bg" class="font-weight-bold control-label">
                                                 Tới khu du lịch, trò sẽ
                                             </label>
-                                            <form class="options" autocomplete="off">
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios1" value="1">
-                                                    Tham gia vào các hoạt động vui chơi của học sinh cùng Nhà, cùng khóa
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios2" value="2">
-                                                    Chỉ chơi với nhóm nhỏ những đứa thân như đã lên kế hoạch
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios3" value="3">
-                                                    Tìm hiểu những điểm thú vị, kỳ bí về nơi này
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios4" value="4">
-                                                    Mặc kệ các Huynh Trưởng và hoạt động tập thể, chỉ làm theo ý mình thích
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios5" value="5">
-                                                    Vào các hàng quán, kiosk của người dân trong vùng
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios6" value="6">
-                                                    Tới những nơi càng có ít người càng tốt
-                                                </label><br>
-                                                <label>
-                                                    <input class="option" type="radio" name="question6" id="optionsRadios7" value="7">
-                                                    Làm những gì trí tò mò mách bảo
-                                                </label><br><br>
-                                            </form>
+                                            <div class="container">        
+                                                <form class="options" id="carousel" autocomplete="off">
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-1.png" alt=""/>
+                                                      <br><br>  Tham gia vào các hoạt động vui chơi của học sinh cùng Nhà, cùng khóa
+                                                     <br>   <input class="option" type="radio" name="question6" id="optionsRadios1" value="1">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-2.png" alt=""/>
+                                                      <br><br>  Chỉ chơi với nhóm nhỏ những đứa thân như đã lên kế hoạch
+                                                      <br>  <input class="option" type="radio" name="question6" id="optionsRadios2" value="2">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-3.png" alt=""/>
+                                                       <br><br> Tìm hiểu những điểm thú vị, kỳ bí về nơi này
+                                                      <br>  <input class="option" type="radio" name="question6" id="optionsRadios3" value="3">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-4.png" alt=""/>
+                                                    <br><br>    Mặc kệ các Huynh Trưởng và hoạt động tập thể, chỉ làm theo ý mình thích
+                                                     <br>   <input class="option" type="radio" name="question6" id="optionsRadios4" value="4">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-5.png" alt=""/>
+                                                      <br><br>  Vào các hàng quán, kiosk của người dân trong vùng
+                                                      <br>  <input class="option" type="radio" name="question6" id="optionsRadios5" value="5">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-6.png" alt=""/>
+                                                      <br><br>  Tới những nơi càng có ít người càng tốt
+                                                      <br>  <input class="option" type="radio" name="question6" id="optionsRadios6" value="6">
+
+                                                    </figure>
+                                                    <figure>
+                                                        <img width="80%" height="80%" src="images/options/6-7.png" alt=""/>
+                                                     <br><br>   Làm những gì trí tò mò mách bảo
+                                                      <br>  <input class="option" type="radio" name="question6" id="optionsRadios7" value="7">
+
+                                                    </figure><br><br>
+                                                </form>
+                                            </div>
                                         </div>
 
                                         <!-- Question 7 -->
@@ -364,18 +641,18 @@ include 'common.php';
                                                 Trò cảm thấy tò mò với cảnh tượng
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question7" id="optionsRadios1" value="1">
                                                     Một làn khói bốc ra từ một căn chòi trong khu dân cư
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question7" id="optionsRadios2" value="2">
                                                     Một làn khói lạ bốc ra từ ba lô của một bạn trong trường
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question7" id="optionsRadios3" value="3">
                                                     Một cột khói xa xa nơi cánh rừng hoang vu
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
@@ -386,35 +663,35 @@ include 'common.php';
                                                 Trò rất muốn đến chỗ bốc khói đó để xem chuyện gì xảy ra, nhưng lại bắt gặp Thủ Lĩnh Nam Sinh đang hôn bạn gái mình ở góc kín. Trò sẽ
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios1" value="1">
                                                     Mặc kệ, chạy đi xem khói đã
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios2" value="2">
                                                     Đứng lại xem đôi tình nhân
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios3" value="3">
                                                     Chia nhau với bạn thân, mỗi đứa xem một chỗ rồi kể cho nhau
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios4" value="4">
                                                     Kéo bạn bè đi xem khói để họ được riêng tư
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios5" value="5">
                                                     Vốn không ưa gã TLNS này, phải bảo mọi người tới xem cho hắn ê mặt
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question8" id="optionsRadios6" value="6">
                                                     Phóng bùa khóa lưỡi rồi chạy đi xem khói
 
-                                                </label><br><br>
+                                                </figure><br><br>
                                             </form>
                                         </div>
 
@@ -425,34 +702,34 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios1" value="1">
                                                     Giấy da dê
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios2" value="2">
                                                     Thảo dược
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios3" value="3">
                                                     Biển
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios4" value="4">
                                                     Cỏ
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios5" value="5">
                                                     Quế
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios6" value="6">
                                                     Đất ẩm
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question9" id="optionsRadios7" value="7">
                                                     Chanh dây
-                                               </label><br><br>
+                                                </figure><br><br>
                                             </form>
                                         </div>
 
@@ -463,36 +740,36 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios1" value="1">
                                                     Dùng để cưa người trong mộng
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios2" value="2">
                                                     Dùng để mơi anh chàng/cô nàng hot nhất cho dạ vũ đêm đó của Trường
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios3" value="3">
                                                     Dùng để chơi khăm bồ cũ/tình địch
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios4" value="4">
                                                     Dùng để chơi khăm gã/bà Thủ lĩnh/Huynh trưởng hách dịch
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios5" value="5">
                                                     Không dùng vì mặc cảm tội lỗi
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question10" id="optionsRadios6" value="6">
                                                     Không dùng vì có bạn gái/bạn trai rồi mà
 
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
@@ -504,25 +781,25 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question11" id="optionsRadios1" value="1">
                                                     Ếm bùa nó cho nó khỏi lôi thôi
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question11" id="optionsRadios2" value="2">
                                                     Thanh minh với nó rằng trò chỉ tình cờ tìm thấy và không hề sử dụng (dù có ý định)
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question11" id="optionsRadios3" value="3">
                                                     Dùng lời lẽ ngon ngọt để nó cũng thích và dùng theo, lợi cả đôi bên
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question11" id="optionsRadios4" value="4">
                                                     Dùng lời lẽ ngon ngọt để nó cũng thích và dùng theo, rồi bắt quả tang và tố nó
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
@@ -534,25 +811,25 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question12" id="optionsRadios1" value="1">
                                                     Người trông ổn nhất, biết chải chuốt một tý dù chẳng quen biết mấy
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question12" id="optionsRadios2" value="2">
                                                     Người nói chuyện rất nhạt nhẽo nhưng ít nhất đã tiếp xúc vài lần, học chung nhóm vài môn
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question12" id="optionsRadios3" value="3">
                                                     Người ngoại hình dưới trung bình, biết nói chuyện nhưng luôn tươi cười tới mức trò thấy có vấn đề
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question12" id="optionsRadios4" value="4">
                                                     Người nào chẳng được, trò sẽ không tham gia khiêu vũ hay những trò kiểu thế tối nay đâu mà
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
@@ -564,46 +841,46 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios1" value="1">
                                                     Ăn nói, cử chỉ vô duyên
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios2" value="2">
                                                     Liên tục yêu cầu trò phải làm gì
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios3" value="3">
                                                     Chảnh
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios4" value="4">
                                                     Nói chuyện nhạt nhẽo, hiểu biết nông cạn
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios5" value="5">
                                                     Khó chịu ra mặt vì chính trò không hào hứng tham gia khiêu vũ cùng bạn ấy
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios6" value="6">
                                                     Luôn đi tìm trò trong khi trò muốn tránh mặt
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios7" value="7">
                                                     Không có gì phải khó chịu vì trò vốn không kỳ vọng gì ở họ
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios8" value="8">
                                                     Không có gì phải khó chịu, trò thiếu gì niềm vui khác
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question13" id="optionsRadios9" value="9">
                                                     Không có gì phải khó chịu, mỗi người có cá tính riêng mà
-                                                </label><br>
+                                                </figure><br>
 
                                                 <br>
                                             </form>
@@ -616,32 +893,32 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios1" value="1">
                                                     Trên sàn khiêu vũ
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios2" value="2">
                                                     Làm quen với bạn bè mới
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios3" value="3">
                                                     Bên bàn uống nước
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios4" value="4">
                                                     Ở những nơi ít ai để ý
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios5" value="5">
                                                     Bên ngoài khán phòng
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question14" id="optionsRadios6" value="6">
                                                     Né tránh người bạn nhảy khó chịu
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
@@ -653,47 +930,77 @@ include 'common.php';
 
                                             </label>
                                             <form class="options" autocomplete="off">
-                                                <label>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios1" value="1">
                                                     Những kỷ niệm vui với bạn bè
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios2" value="2">
                                                     Những điều kỳ thú trò khám phá ra ở nơi đây
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios3" value="3">
                                                     Lần đầu tiên được cưỡi thảm bay hay độn thổ kèm theo
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios4" value="4">
                                                     Sự cố Tình dược
 
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios5" value="5">
                                                     Trò lãng mạn vụng trộm của gã TLNS và cô bồ
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios6" value="6">
                                                     Thời gian vui vẻ với bạn trai/bạn gái của trò
-                                                </label><br>
-                                                <label>
+                                                </figure><br>
+                                                <figure>
                                                     <input class="option" type="radio" name="question15" id="optionsRadios7" value="7">
                                                     Đêm Dạ vũ với người bạn nhảy khó chịu ngoài mức tưởng tượng
 
-                                                </label><br>
+                                                </figure><br>
                                                 <br>
                                             </form>
                                         </div>
 
+                                        <!-- Name -->
+                                        <div class="questions">
+                                            <label for="name" class="font-weight-bold control-label">
+                                                Tên của trò
+                                            </label>
+                                            <form class="options" autocomplete="off">
+                                                <label>
+                                                    <input class="option" type="text" name="question16" id="optionsRadios1" value="">
+
+                                                </label>
+                                                <br><br>
+                                            </form> 
+                                        </div>
+                                        
+                                       
                                         <div class="w-100"></div>
 
                                         <!-- Next button -->
                                         <div class="form-group">
-                                            <input type="button" id="next" value="Next" onclick="sum_values()">
+                                            <input type="button" id="nextQuestion" value="Next" onclick="sum_values()">
                                         </div>
+
+                                        <section id="options" >
+                                         <!--   <p>
+                                                <label style="visibility: hidden" for="panel-count" >panels</figure>
+                                                <input type="range" id="panel-count" value="5" min="1" max="7" />
+                                            </p>-->
+
+                                            <p id="navigation">
+                                                <button style="margin-right: 20px" id="previous" data-increment="-1"> Previous</button>
+
+                                                <button id="next" data-increment="1">Next</button>
+
+                                            </p>
+
+                                        </section>
                                     </div>
                                 </div>
 
@@ -702,6 +1009,8 @@ include 'common.php';
                             </div>
                         </div>
 
+                    <img id ="house-image" class="row" width="80%" height="80%" style="display: none" src="images/results/ihrH53K_2018-01-20_213501.jpg"/>
+                    
                     </div>
 
 
@@ -718,7 +1027,11 @@ include 'common.php';
         </div>
 
 
+        <script src="utils.js" type="text/javascript"></script>
 
+        <script>
+
+        </script>
 
     </body>
 </html>

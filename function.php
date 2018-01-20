@@ -534,7 +534,7 @@ $datetime = new DateTime();
 $result = $datetime->format('Y-m-d H:i:s');
 $result = str_replace(":", "", $result);
 $result = str_replace(" ", "_", $result);
-$path = "images/results/" . generateRandomString(7) . "_" . $result . ".jpg";
+$path = "results/" . generateRandomString(7) . "_" . $result . ".jpg";
 
 //Choose House background
 if ($maxHouse == "Gry") {
@@ -571,6 +571,6 @@ $image->save($path, false, true);
 //      $image = new PHPImage();
 //     $image->draw($path);
 //    $image->save($path, false, true);
-
-echo ("Gry " . $gry . " - Huf " . $huf . " - Rav " . $rav . " - Sly " . $sly . $path);
+//"Gry " . $gry . " - Huf " . $huf . " - Rav " . $rav . " - Sly " . $sly . 
+echo ($path);
 ?>
